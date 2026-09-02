@@ -6,7 +6,7 @@ import AIExplanationPanel from './AIExplanationPanel';
 import AnalyticsCharts from './AnalyticsCharts';
 
 export default function Dashboard() {
-  const { alerts, isConnected } = useWebSocket('ws://localhost:8000/ws/traffic');
+  const { alerts, isConnected } = useWebSocket('ws://127.0.0.1:8040/ws/traffic');
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
 
   // Statistics
@@ -18,29 +18,29 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* Top Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <StatCard 
-          icon={<Activity className="text-blue-400" />}
+        <StatCard
+          icon={<Activity className="text-signal-teal" />}
           label="Packets Analyzed (Session)"
           value={totalAnalyzed.toLocaleString()}
-          color="border-blue-900/50"
+          color="border-signal-teal/50"
         />
-        <StatCard 
-          icon={<ShieldAlert className="text-red-400" />}
+        <StatCard
+          icon={<ShieldAlert className={maliciousCount > 0 ? "text-threat-red animate-pulse" : "text-gray-600"} />}
           label="Malicious Flows"
           value={maliciousCount.toLocaleString()}
-          color="border-red-900/50"
+          color={maliciousCount > 0 ? "border-threat-red" : "border-gray-800"}
         />
-        <StatCard 
-          icon={<ShieldAlert className="text-yellow-400" />}
+        <StatCard
+          icon={<ShieldAlert className={suspiciousCount > 0 ? "text-threat-amber" : "text-gray-600"} />}
           label="Suspicious Flows"
           value={suspiciousCount.toLocaleString()}
-          color="border-yellow-900/50"
+          color={suspiciousCount > 0 ? "border-threat-amber" : "border-gray-800"}
         />
-        <StatCard 
-          icon={<Zap className="text-cyan-400" />}
+        <StatCard
+          icon={<Zap className="text-gray-400" />}
           label="Engine Latency"
           value="14 ms"
-          color="border-cyan-900/50"
+          color="border-gray-800/50"
         />
       </div>
 
@@ -48,19 +48,19 @@ export default function Dashboard() {
         {/* Left Column: Live Traffic (2/3 width) */}
         <div className="lg:col-span-2 space-y-6">
           <div className="glass-panel p-4 h-[400px] flex flex-col">
-            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 font-mono uppercase tracking-wider text-gray-300">
+              <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-signal-teal animate-pulse' : 'bg-threat-red'}`}></span>
               Live Traffic Stream
             </h2>
             <div className="flex-1 overflow-hidden">
-               <LiveTrafficTable 
-                  alerts={alerts} 
-                  onSelectRow={setSelectedAlert}
-                  selectedId={selectedAlert?.id}
-               />
+              <LiveTrafficTable
+                alerts={alerts}
+                onSelectRow={setSelectedAlert}
+                selectedId={selectedAlert?.id}
+              />
             </div>
           </div>
-          
+
           <div className="glass-panel p-4 h-[300px]">
             <h2 className="text-lg font-semibold mb-4">Traffic Anomaly Distribution</h2>
             <AnalyticsCharts alerts={alerts} />

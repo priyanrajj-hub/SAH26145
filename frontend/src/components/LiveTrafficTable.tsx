@@ -44,13 +44,13 @@ export default function LiveTrafficTable({ alerts, onSelectRow, selectedId }: Pr
             if (alert.id === selectedId) {
               rowClass += ' bg-gray-800/80 ring-1 ring-inset ring-gray-600';
             }
-            if (isMalicious) rowClass += ' border-l-2 border-red-500';
-            else if (isSuspicious) rowClass += ' border-l-2 border-yellow-500';
+            if (isMalicious) rowClass += ' border-l-2 border-threat-red';
+            else if (isSuspicious) rowClass += ' border-l-2 border-threat-amber';
             else rowClass += ' border-l-2 border-transparent';
 
             return (
-              <tr 
-                key={alert.id} 
+              <tr
+                key={alert.id}
                 className={rowClass}
                 onClick={() => onSelectRow(alert)}
               >
@@ -62,15 +62,15 @@ export default function LiveTrafficTable({ alerts, onSelectRow, selectedId }: Pr
                 <td className="px-4 py-3">{alert.packet.protocol}</td>
                 <td className="px-4 py-3">{alert.packet.packet_size}</td>
                 <td className="px-4 py-3">
-                  {isMalicious && <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-red-500/10 text-red-400 border border-red-500/20"><AlertTriangle size={14} /> Malicious</span>}
-                  {isSuspicious && <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"><HelpCircle size={14} /> Suspicious</span>}
-                  {isSafe && <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><ShieldCheck size={14} /> Safe</span>}
+                  {isMalicious && <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-sm bg-threat-red/10 text-threat-red border border-threat-red/20"><AlertTriangle size={14} /> Malicious</span>}
+                  {isSuspicious && <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-sm bg-threat-amber/10 text-threat-amber border border-threat-amber/20"><HelpCircle size={14} /> Suspicious</span>}
+                  {isSafe && <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-sm bg-signal-teal/10 text-signal-teal border border-signal-teal/20"><ShieldCheck size={14} /> Safe</span>}
                 </td>
               </tr>
             );
           })}
         </tbody>
       </table>
-    </div>
+    </div >
   );
 }

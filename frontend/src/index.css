@@ -9,5 +9,14 @@
 }
 
 .glass-panel {
-  @apply bg-gray-900/50 backdrop-blur-md border border-gray-800 rounded-xl shadow-xl;
+  @apply bg-gray-900/60 backdrop-blur-md border border-gray-800 shadow-xl rounded-sm;
+}
+
+@keyframes flow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-flow {
+  animation: flow 2s linear infinite;
 }

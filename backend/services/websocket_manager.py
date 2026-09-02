@@ -87,6 +87,12 @@ async def traffic_generator():
             acknowledged=False
         )
         
+        # Populate mocked alerts_db
+        from api.v1.routes.alerts import alerts_db
+        alerts_db.append(alert_obj.model_dump())
+        if len(alerts_db) > 50:
+            alerts_db.pop(0)
+        
         # Broadcast all traffic to the UI so we can see the live feed
         # In a real scenario, we might only broadcast Malicious/Suspicious or 
         # send normal traffic at a sampled rate.

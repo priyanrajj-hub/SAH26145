@@ -20,13 +20,12 @@ def generate_synthetic_data(n_samples=5000):
     # 1. Safe Traffic (60% of data)
     n_safe = int(n_samples * 0.6)
     for _ in range(n_safe):
-        port = np.random.choice([80, 443, 8080, 53, 22]) # Add more ports to overlap
-        proto = np.random.choice([0, 1, 2], p=[0.7, 0.2, 0.1])
-        # Include some large safe packets (e.g. video streaming, large downloads)
-        size = np.random.normal(1500, 3000) if np.random.rand() < 0.1 else np.random.normal(500, 300)
-        # Include some very short and very long safe durations
-        duration = np.random.exponential(5.0) 
-        data.append([port, proto, max(40, size), max(0.01, duration)])
+        port = np.random.choice([80, 443, 8080, 53, 22, 123, 21, 3389]) 
+        proto = np.random.choice([0, 1, 2], p=[0.6, 0.3, 0.1])
+        # Significant overlap with attacks: some very small, some very large
+        size = np.random.normal(1500, 8000) if np.random.rand() < 0.15 else np.random.normal(500, 400)
+        duration = np.random.exponential(10.0) if np.random.rand() < 0.2 else np.random.exponential(0.5)
+        data.append([port, proto, max(40, size), max(0.001, duration)])
         labels.append(0)
         
     # 2. DDoS (20% of data)
@@ -34,9 +33,9 @@ def generate_synthetic_data(n_samples=5000):
     for _ in range(n_ddos):
         port = np.random.choice([80, 443, 53, 123, 445])
         proto = np.random.choice([0, 1, 2], p=[0.4, 0.4, 0.2])
-        # Sometimes DDoS packets aren't perfectly small
-        size = np.random.normal(100, 200) if np.random.rand() < 0.8 else np.random.normal(1000, 500)
-        duration = np.random.uniform(0.001, 0.1) if np.random.rand() < 0.9 else np.random.uniform(0.1, 2.0)
+        # Add overlaps: sometimes DDoS packets behave like safe traffic
+        size = np.random.normal(500, 300) if np.random.rand() < 0.2 else np.random.normal(100, 50)
+        duration = np.random.exponential(5.0) if np.random.rand() < 0.2 else np.random.uniform(0.001, 0.05)
         data.append([port, proto, max(40, size), max(0.001, duration)])
         labels.append(1)
         
@@ -45,19 +44,21 @@ def generate_synthetic_data(n_samples=5000):
     for _ in range(n_exfil):
         port = np.random.choice([443, 21, 22, 53, 80, 8080]) 
         proto = np.random.choice([0, 1], p=[0.8, 0.2])
-        size = np.random.normal(12000, 8000) # Unusually large, but overlaps with safe large packets
-        duration = np.random.uniform(2.0, 40.0)
+        # Overlap with large safe packets, sometimes smaller chunks
+        size = np.random.normal(1500, 1000) if np.random.rand() < 0.3 else np.random.normal(12000, 5000)
+        duration = np.random.normal(10.0, 5.0) if np.random.rand() < 0.3 else np.random.uniform(20.0, 60.0)
         data.append([port, proto, max(40, size), max(0.1, duration)])
         labels.append(2)
         
     # 4. Unauthorized Tunneling (10% of data)
     n_tunnel = int(n_samples * 0.1)
     for _ in range(n_tunnel):
-        port = np.random.choice([53, 22, 443, 3389, 80])
+        port = np.random.choice([53, 22, 443, 3389, 80, 8080])
         proto = np.random.choice([0, 1], p=[0.6, 0.4])
-        size = np.random.normal(500, 400) # Normal looking size
-        duration = np.random.normal(50.0, 30.0) # Very long steady flow
-        data.append([port, proto, max(40, size), max(1.0, duration)])
+        # Blend in with Safe traffic
+        size = np.random.normal(500, 500) 
+        duration = np.random.exponential(2.0) if np.random.rand() < 0.2 else np.random.normal(40.0, 20.0)
+        data.append([port, proto, max(40, size), max(0.1, duration)])
         labels.append(3)
         
     df = pd.DataFrame(data, columns=['dest_port', 'protocol_encoded', 'packet_size', 'flow_duration'])

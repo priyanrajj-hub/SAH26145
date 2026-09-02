@@ -1,0 +1,9 @@
+@"
+node_modules/
+__pycache__/
+*.pyc
+dist/
+.env
+backend/.env
+backend/models/trained/*.pkl
+"@ | Out-File -Encoding utf8 .gitignore

@@ -27,14 +27,12 @@ FastAPI backend — REST endpoints + WebSocket alert stream
 v
 React (Vite + Tailwind) dashboard — live traffic table, analytics charts, AI summary panel
 
-
 ## Repository structure
 
 SAH26/
 ├── backend/
 │ ├── main.py # FastAPI entrypoint, CORS, WebSocket routing
 │ ├── requirements.txt
-│ ├── .env.example
 │ ├── api/v1/routes/
 │ │ ├── traffic.py # historical logs, threat stats
 │ │ └── alerts.py # alert management/filtering
@@ -66,7 +64,6 @@ SAH26/
 ├── .gitignore
 └── README.md
 
-
 ## What's implemented
 
 - Real trained ML pipeline (RandomForest + IsolationForest) on synthetic
@@ -94,9 +91,6 @@ cd backend
 python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-
-# copy env template and add your API key (if using LLM summarization)
-cp .env.example .env
 
 # train the model (only needed once, or to retrain)
 python scripts/train_model.py
@@ -137,4 +131,5 @@ traffic replay to see live alerts populate the dashboard.
 
 ## Team
 
-_Add your team name / members here._
+- Pranesh (PranesH-18-04)
+- Priyanraj (priyanrajj-hub)

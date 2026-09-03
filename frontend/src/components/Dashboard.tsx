@@ -6,7 +6,8 @@ import AIExplanationPanel from './AIExplanationPanel';
 import AnalyticsCharts from './AnalyticsCharts';
 
 export default function Dashboard() {
-  const { alerts, isConnected } = useWebSocket('ws://localhost:8000/ws/traffic');
+  const wsUrl = import.meta.env.VITE_API_URL.replace(/^http/, "ws");
+  const { alerts, isConnected } = useWebSocket(`${wsUrl}/ws/traffic`);
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
 
   // Statistics

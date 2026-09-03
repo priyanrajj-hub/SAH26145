@@ -99,21 +99,26 @@ class MLEngine:
         size = packet_dict.get('packet_size', 500)
         duration = packet_dict.get('flow_duration', 1.0)
         
-        # Prepare feature vector [dest_port, protocol_encoded, packet_size, flow_duration]
-        X = np.array([[port, proto_encoded, size, duration]])
+        import pandas as pd
+        
+        # Prepare feature vector as DataFrame to avoid sklearn UserWarning
+        X_df = pd.DataFrame(
+            [[port, proto_encoded, size, duration]], 
+            columns=['dest_port', 'protocol_encoded', 'packet_size', 'flow_duration']
+        )
         
         # Base safe defaults in case models aren't loaded
         if self.rf_clf is None:
             return 0.1, "Safe", None, "Model not loaded.", 0.99
             
         # Predict Probabilities
-        probas = self.rf_clf.predict_proba(X)[0] # e.g. [0.1, 0.8, 0.05, 0.05]
+        probas = self.rf_clf.predict_proba(X_df)[0] # e.g. [0.1, 0.8, 0.05, 0.05]
         predicted_class_idx = np.argmax(probas)
         base_confidence = float(probas[predicted_class_idx])
         
         # Unsupervised Anomaly Score (-1 for anomaly, 1 for normal)
-        iso_pred = self.iso_forest.predict(X)[0]
-        iso_score = self.iso_forest.score_samples(X)[0] # lower score means more anomalous
+        iso_pred = self.iso_forest.predict(X_df)[0]
+        iso_score = self.iso_forest.score_samples(X_df)[0] # lower score means more anomalous
         
         threat_type_str = self.label_map[predicted_class_idx]
         

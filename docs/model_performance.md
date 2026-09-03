@@ -3,32 +3,32 @@
 This document contains the evaluation metrics for the supervised `RandomForestClassifier` trained on the synthetic flow dataset.
 
 ## Overall Metrics
-- **Precision (weighted):** 0.9410
-- **Recall (weighted):** 0.9405
-- **F1-Score (weighted):** 0.9395
+- **Precision (weighted):** 0.9025
+- **Recall (weighted):** 0.9030
+- **F1-Score (weighted):** 0.9021
 
 ## Classification Report
 ```text
                    precision    recall  f1-score   support
 
-             Safe       0.93      0.98      0.95      1198
-             DDoS       0.96      0.94      0.95       415
-Data Exfiltration       0.96      0.82      0.88       212
-        Tunneling       0.94      0.82      0.88       175
+             Safe       0.91      0.95      0.93      1198
+             DDoS       0.91      0.88      0.90       415
+Data Exfiltration       0.95      0.85      0.90       212
+        Tunneling       0.78      0.72      0.75       175
 
-         accuracy                           0.94      2000
-        macro avg       0.95      0.89      0.92      2000
-     weighted avg       0.94      0.94      0.94      2000
+         accuracy                           0.90      2000
+        macro avg       0.89      0.85      0.87      2000
+     weighted avg       0.90      0.90      0.90      2000
 
 ```
 
 ## Confusion Matrix
 Rows are actual labels, columns are predicted labels in order: Safe, DDoS, Data Exfiltration, Tunneling.
 ```text
-[[1172   15    7    4]
- [  24  391    0    0]
- [  32    0  174    6]
- [  30    0    1  144]]
+[[1133   37    8   20]
+ [  47  367    0    1]
+ [  17    1  180   14]
+ [  47    0    2  126]]
 ```
 
 ## Methodology
